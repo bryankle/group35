@@ -1,0 +1,25 @@
+.landing {
+	background-color: black;
+    margin:auto;
+}
+
+.testimonials {
+    padding-top: 5em;
+}
+
+.pad-top {
+    padding-top: 5em;
+}
+
+.form-signin {
+    max-width: 330px;
+    margin: 0 auto;
+    padding-top: 10em;
+}
+.thumbnail {
+	width: 20px;
+}
+
+.table>tbody>tr>td, .table>tfoot>tr>td{
+    vertical-align: middle;
+}

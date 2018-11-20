@@ -20,7 +20,7 @@ npm install
 ## To start application
 
 ```
-npm server
+node server
 ```
 
 ## Accessing the site

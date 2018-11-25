@@ -42,7 +42,7 @@ app.use('/util', express.static('util'));
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
-app.set('port', 3000);
+app.set('port', 1298);
 
 app.get('/', function (req, res, next) {
     res.render('home');

@@ -30,32 +30,36 @@
 					</li>
 				</ul>
 
-				{{!-- Navigation bar changes based on authentication status --}}
-				{{!-- If user logged in --}}
-				<ul class='navbar-nav navbar-right'>
-					{{#if user}}
-					<li class="nav-item">
-						<a class="nav-link disabled" href="/profile">
-							<i class="far fa-user"></i> Profile</a>
-					</li>
-					<li class="nav-item">
-						{{!-- Logout function imported from utilities folder --}}
-						<a onclick='logoutUser()' class="nav-link disabled" href="">
-							<i class="far fa-sign-out"></i>Log Out</a>
-					</li>
-					{{!-- If user is not logged in --}}
-					{{else}}
-					<li class="nav-item">
-						<a class="nav-link disabled" href="/login">Sign In</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link disabled" href="/register">Register</a>
-					</li>
-					{{/if}}
-				</ul>
-			</div>
-		</nav>
-	</div>
+			{{!-- Navigation bar changes based on authentication status --}}
+			{{!-- If user logged in --}}
+			<ul class='navbar-nav navbar-right'>
+				{{#if user}}
+				<li class="nav-item">
+					<a class="nav-link disabled" href="/profile">
+						<i class="far fa-user"></i> Profile</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="/notes">
+						<i class="fas fa-book"></i> Notes</a>
+				</li>
+				<li class="nav-item">
+					{{!-- Logout function imported from utilities folder --}}
+					<a onclick='logoutUser()' class="nav-link disabled" href="">
+						<i class="far fa-sign-out"></i>Log Out</a>
+				</li>
+				{{!-- If user is not logged in --}}
+				{{else}}
+				<li class="nav-item">
+					<a class="nav-link disabled" href="/login">Sign In</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link disabled" href="/register">Register</a>
+				</li>
+				{{/if}}
+			</ul>
+		</div>
+	</nav>
+</header>
 
 	{{!-- This is the encapsulating HTML --}}
 	{{!-- body provides content HTML for each --}}

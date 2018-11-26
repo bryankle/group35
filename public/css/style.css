@@ -23,3 +23,40 @@
 .table>tbody>tr>td, .table>tfoot>tr>td{
     vertical-align: middle;
 }
+
+form.notes-form {
+  display: block;
+}
+
+form.notes-form label{
+  display: block;
+  margin: 10px 0px 10px 5px;
+}
+
+form.notes-form input{
+  display: block;
+  margin: 10px 0px 10px 5px;
+}
+
+form.notes-form textarea{
+  display: block;
+  margin: 10px 0px 10px 5px;
+}
+
+table.user-notes, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table.user-notes {
+  margin-left: 20px;
+}
+
+table.user-notes td {
+  padding: 10px 5px;
+}
+
+div.notes h2 {
+  padding: 10px 5px;
+}
+

@@ -2,67 +2,66 @@
 <html>
 
 <head>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
-	 crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp"
 	 crossorigin="anonymous">
 	<title>Study Buddy</title>
 </head>
 
-<header>
-	<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-		<a class="navbar-brand" href="/"> Study Buddy
-			<img class='thumbnail' src="" alt="">
-		</a>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
-		 aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-
-		{{!-- Navigation bar items --}}
-		<div class="collapse navbar-collapse" id="navbarCollapse">
-			<ul class="navbar-nav mr-auto">
-				<li class="nav-item active">
-					<a class="nav-link" href="/">Home
-						<span class="sr-only">(current)</span>
-					</a>
-				</li>
-			</ul>
-
-			{{!-- Navigation bar changes based on authentication status --}}
-			{{!-- If user logged in --}}
-			<ul class='navbar-nav navbar-right'>
-				{{#if user}}
-				<li class="nav-item">
-					<a class="nav-link disabled" href="/profile">
-						<i class="far fa-user"></i> Profile</a>
-				</li>
-				<li class="nav-item">
-					{{!-- Logout function imported from utilities folder --}}
-					<a onclick='logoutUser()' class="nav-link disabled" href="">
-						<i class="far fa-sign-out"></i>Log Out</a>
-				</li>
-				{{!-- If user is not logged in --}}
-				{{else}}
-				<li class="nav-item">
-					<a class="nav-link disabled" href="/login">Sign In</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link disabled" href="/register">Register</a>
-				</li>
-				{{/if}}
-			</ul>
-		</div>
-	</nav>
-</header>
-
 <body>
+	<div>
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+			<a class="navbar-brand" href="/"> Study Buddy
+				<img class='thumbnail' src="" alt="">
+			</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+			aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			{{!-- Navigation bar items --}}
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active">
+						<a class="nav-link" href="/">Home
+							<span class="sr-only">(current)</span>
+						</a>
+					</li>
+				</ul>
+
+				{{!-- Navigation bar changes based on authentication status --}}
+				{{!-- If user logged in --}}
+				<ul class='navbar-nav navbar-right'>
+					{{#if user}}
+					<li class="nav-item">
+						<a class="nav-link disabled" href="/profile">
+							<i class="far fa-user"></i> Profile</a>
+					</li>
+					<li class="nav-item">
+						{{!-- Logout function imported from utilities folder --}}
+						<a onclick='logoutUser()' class="nav-link disabled" href="">
+							<i class="far fa-sign-out"></i>Log Out</a>
+					</li>
+					{{!-- If user is not logged in --}}
+					{{else}}
+					<li class="nav-item">
+						<a class="nav-link disabled" href="/login">Sign In</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link disabled" href="/register">Register</a>
+					</li>
+					{{/if}}
+				</ul>
+			</div>
+		</nav>
+	</div>
+
 	{{!-- This is the encapsulating HTML --}}
 	{{!-- body provides content HTML for each --}}
-	<main class='wrapper'>
+	<div>
 		{{{body}}}
-	</main>
+	</div>
 
 
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

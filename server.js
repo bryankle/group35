@@ -7,11 +7,21 @@ const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const flash = require('connect-flash');
 const morgan = require('morgan');
+const multer = require('multer');
 require('./config/passport')(passport);
 const app = express();
 const handlebars = require('express-handlebars').create({
     defaultLayout: 'main'
 });
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+          cb(null, 'uploads/notes/')
+        },
+    filename: (req, file, cb) => {
+          cb(null, file.fieldname + '-' + Date.now())
+        }
+});
+const upload = multer({storage: storage});
 app.use(morgan('dev'));
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -112,6 +122,63 @@ app.get("/profile", isLoggedIn, function (req, res, next) {
             }
         }
     );
+});
+
+// TODO:
+// - add a CR system so user can upload and view notes
+//   - get controller
+//   - get view
+//   - post controller logic
+// - add tests to system so we can have validation around this process
+//
+// add route here that allows the user to add notes, only if they're logged in
+app.get("/notes", isLoggedIn, function (req, res, next) {
+    const userId = req.session.passport.user;
+    mysql.pool.query(
+        "SELECT * FROM notes WHERE notes.user_id = ?",
+        [userId],
+        function (err, notes) {
+            if (err) {
+                res.end();
+            } else {
+                const context = {};
+                context.notes = notes;
+                console.log("Querying from note page", notes);
+                res.render("notes", context);
+            }
+        }
+    );
+});
+
+app.post("/notes", [isLoggedIn, upload.single("note-upload")], function (req, res) {
+    var queryString;
+    var queryValues;
+    const userId = req.session.passport.user;
+    if(req.file === undefined) {
+      queryString = "INSERT INTO notes (user_id, title, text) VALUES (?,?,?)";
+      queryValues = [userId, req.body.title, req.body.text]
+    }
+    else {
+      queryString = "INSERT INTO notes (user_id, title, text, attachment, file_name) VALUES (?,?,?,?,?)";
+      queryValues = [userId, req.body.title, req.body.text, __dirname + "/" + req.file.path, req.file.filename]
+    }
+    mysql.pool.query(
+        queryString,
+        queryValues,
+        function (err, notes) {
+            if (err) {
+                res.end();
+            } else {
+              console.log("New note creation successful ", notes);
+              res.redirect('notes');
+            }
+        }
+    );
+});
+
+app.get('/note-download/:file', function(req, res){
+  var file = __dirname + "/uploads/notes/" + req.params.file;
+  res.download(file);
 });
 
 app.use(function (req, res) {

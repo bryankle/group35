@@ -82,11 +82,46 @@ app.get('/register', function (req, res, next) {
 app.post(
     "/register",
     passport.authenticate("local-signup", {
-        successRedirect: "/",
+        successRedirect: "/survey",
         failureRedirect: "/register",
         failureFlash: true
     })
 );
+
+app.route('/survey')
+    .get(function(req, res){
+        mysql.pool.query(
+            "SELECT * FROM question INNER JOIN survey ON question.survey_id=survey.survey_id WHERE survey.name = 'registration'",
+            function (err, questions) {
+                if (err) {
+                    res.end();
+                } else {
+                    const context = {};
+                    context.questions = questions;
+                    res.render('survey', context);
+                }
+            }
+        );
+    })
+    .post(function(req, res){
+        var answers = req.body;
+
+        for (var a in answers) {
+            mysql.pool.query(
+                "INSERT INTO answer (user_id, question_id, text) VALUES (?, ?, ?)",
+                [res.locals.user, a, answers[a]],
+                function (err, result) {
+                    if (err) {
+                        res.end();
+                    }
+                    else {
+                        //
+                    }
+                }
+            );
+        }
+        res.redirect('/');
+    })
 
 function isLoggedIn(req, res, next) {
     // If user is athenticated in the session, carry on
@@ -94,6 +129,7 @@ function isLoggedIn(req, res, next) {
     // If they aren't redirect them to the home page
     res.redirect("/");
 }
+
 
 // Only allows user to access profile if they are authenticated
 app.get("/profile", isLoggedIn, function (req, res, next) {
@@ -106,13 +142,14 @@ app.get("/profile", isLoggedIn, function (req, res, next) {
                 res.end();
             } else {
                 const context = {};
-                context.user = user;
+                context.user = user[0];
                 console.log("Querying from profile page", user);
                 res.render("profile", context);
             }
         }
     );
 });
+
 
 app.use(function (req, res) {
     res.status(404);

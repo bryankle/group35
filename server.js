@@ -8,6 +8,7 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const morgan = require('morgan');
 const multer = require('multer');
+
 require('./config/passport')(passport);
 const app = express();
 const handlebars = require('express-handlebars').create({
@@ -160,13 +161,6 @@ app.get("/profile", isLoggedIn, function (req, res, next) {
     );
 });
 
-// TODO:
-// - add a CR system so user can upload and view notes
-//   - get controller
-//   - get view
-//   - post controller logic
-// - add tests to system so we can have validation around this process
-//
 // add route here that allows the user to add notes, only if they're logged in
 app.get("/notes", isLoggedIn, function (req, res, next) {
     const userId = req.session.passport.user;
@@ -212,11 +206,28 @@ app.post("/notes", [isLoggedIn, upload.single("note-upload")], function (req, re
     );
 });
 
-app.get('/note-download/:file', function(req, res){
+app.get('/note-download/:file', isLoggedIn, function(req, res){
   var file = __dirname + "/uploads/notes/" + req.params.file;
   res.download(file);
 });
 
+app.get("/chat", isLoggedIn, function (req, res, next) {
+    const userId = req.session.passport.user;
+    mysql.pool.query(
+        "SELECT * FROM user WHERE user.user_id = ?",
+        [userId],
+        function (err, user) {
+            if (err) {
+                res.end();
+            } else {
+                const context = {};
+                context.user = user[0];
+                console.log("Querying for chat page", user);
+                res.render("chat", context);
+            }
+        }
+    );
+});
 
 app.use(function (req, res) {
     res.status(404);
@@ -224,10 +235,73 @@ app.use(function (req, res) {
 });
 
 
-app.listen(app.get('port'), function () {
+var server = require('http').createServer(app);
+server.listen(app.get('port'), function () {
     console.log(
         'Express started on http://localhost:' +
         app.get('port') +
         '; press Ctrl-C to terminate.'
     );
+});
+
+var io = require('socket.io')(server); // add this line
+
+var numUsers = 0;
+io.on('connection', function(socket) {
+    var addedUser = false;
+    console.log('user connected');
+
+    // when the client emits 'new message', this listens and executes
+    socket.on('new message', (data) => {
+      // we tell the client to execute 'new message'
+      socket.broadcast.emit('new message', {
+        username: socket.username,
+        message: data
+      });
+    });
+
+    // when the client emits 'add user', this listens and executes
+    socket.on('add user', (username) => {
+      if (addedUser) return;
+
+      // we store the username in the socket session for this client
+      socket.username = username;
+      ++numUsers;
+      addedUser = true;
+      socket.emit('login', {
+        numUsers: numUsers
+      });
+      // echo globally (all clients) that a person has connected
+      socket.broadcast.emit('user joined', {
+        username: socket.username,
+        numUsers: numUsers
+      });
+    });
+
+    // when the client emits 'typing', we broadcast it to others
+    socket.on('typing', () => {
+      socket.broadcast.emit('typing', {
+        username: socket.username
+      });
+    });
+
+    // when the client emits 'stop typing', we broadcast it to others
+    socket.on('stop typing', () => {
+      socket.broadcast.emit('stop typing', {
+        username: socket.username
+      });
+    });
+
+    // when the user disconnects.. perform this
+    socket.on('disconnect', () => {
+      if (addedUser) {
+        --numUsers;
+
+        // echo globally that this client has left
+        socket.broadcast.emit('user left', {
+          username: socket.username,
+          numUsers: numUsers
+        });
+      }
+    });
 });

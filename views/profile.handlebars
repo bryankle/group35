@@ -1,3 +1,15 @@
 <div class="pad-top">
     <h1>Welcome, {{ user.first_name }}</h1>
 </div>
+<div class="notes">
+    <h2>Create a group or join an existing one</h2>
+    <input name="textbox1" id="textbox1" type="text" />
+    <input name="buttonExecute" onclick="makeGroup(document.getElementById('textbox1').value)" type="button" value="Execute" />
+    {{#each groups}}
+    <tr>
+      <td>{{this.name}}</td>
+      <td>{{this.group_id}}<</td>>
+      <input class="btn btn-success" type="submit">
+    </tr>
+    {{/each}}
+</div>

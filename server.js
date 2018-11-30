@@ -140,26 +140,50 @@ function isLoggedIn(req, res, next) {
     res.redirect("/");
 }
 
+function makeGroup(groupname){
+  console.log("Adding group ",groupname," to database.");
+  mysql.pool.query(
+    "INSERT INTO groups (group_id, name) VALUES (?, ?)",
+    [groupname, 1],
+    function (err, result) {
+      if (err) {
+        console.log("AAAAAa");
+        res.end();
+      }
+      else {
+        //
+      }
+    });
+  }
 
 // Only allows user to access profile if they are authenticated
 app.get("/profile", isLoggedIn, function (req, res, next) {
-    const userId = req.session.passport.user;
-    mysql.pool.query(
-        "SELECT * FROM user WHERE user.user_id = ?",
-        [userId],
-        function (err, user) {
-            if (err) {
-                res.end();
-            } else {
-                const context = {};
-                context.user = user[0];
-                console.log("Querying from profile page", user);
-                res.render("profile", context);
-            }
-        }
-    );
-});
-
+  const userId = req.session.passport.user;
+  const context = {};
+  mysql.pool.query(
+    "SELECT * FROM user WHERE user.user_id = ?",
+    [userId],
+    function (err, user) {
+      if (err) {
+        res.end();
+      } else {
+        context.user = user[0];
+        console.log("Querying from profile page", user);
+      }
+      });
+                  console.log("Querying Groups");
+      mysql.pool.query(
+        "SELECT * FROM groups",
+        function (err,groups) {
+          if (err){
+            res.end();
+          }else{
+            var testgroups = [{name: "test12", group_id: "1111"},{name: "test0", group_id: "1112"}]
+            context.groups = testgroups;
+          }
+        });
+      res.render("profile", context);
+    });
 // TODO:
 // - add a CR system so user can upload and view notes
 //   - get controller

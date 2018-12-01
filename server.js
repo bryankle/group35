@@ -140,21 +140,24 @@ function isLoggedIn(req, res, next) {
     res.redirect("/");
 }
 
-function makeGroup(groupname){
-  console.log("Adding group ",groupname," to database.");
+
+app.post('/profile', function(req, res) {
+  console.log(req.body);
   mysql.pool.query(
-    "INSERT INTO groups (group_id, name) VALUES (?, ?)",
-    [groupname, 1],
+    "INSERT INTO groups (name, description) VALUES (?,?)",
+    [req.body.field1,req.body.field2],
     function (err, result) {
       if (err) {
-        console.log("AAAAAa");
+        console.log("Error adding group");
         res.end();
       }
       else {
-        //
+        console.log("Successfully added group.");
       }
     });
-  }
+    res.redirect("/profile");
+    res.send(200);
+});
 
 // Only allows user to access profile if they are authenticated
 app.get("/profile", isLoggedIn, function (req, res, next) {
@@ -170,20 +173,31 @@ app.get("/profile", isLoggedIn, function (req, res, next) {
         context.user = user[0];
         console.log("Querying from profile page", user);
       }
-      });
-                  console.log("Querying Groups");
-      mysql.pool.query(
-        "SELECT * FROM groups",
-        function (err,groups) {
-          if (err){
-            res.end();
-          }else{
-            var testgroups = [{name: "test12", group_id: "1111"},{name: "test0", group_id: "1112"}]
-            context.groups = testgroups;
-          }
-        });
-      res.render("profile", context);
     });
+    console.log("Querying Groups");
+    mysql.pool.query(
+      "SELECT * FROM groups",
+      [userId],
+      function (err, groups) {
+        if (err) {
+          console.log("Error fetching group info");
+          res.end();
+        } else {
+          context.groups = groups;
+          console.log("Querying from groups page");
+          var i;
+          for (i=0; i<groups.length; i++){
+            console.log(groups[i])
+          }
+          res.render("profile", context);
+        }
+      }
+    );
+  });
+
+
+
+
 // TODO:
 // - add a CR system so user can upload and view notes
 //   - get controller

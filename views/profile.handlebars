@@ -3,13 +3,22 @@
 </div>
 <div class="notes">
     <h2>Create a group or join an existing one</h2>
-    <input name="textbox1" id="textbox1" type="text" />
-    <input name="buttonExecute" onclick="makeGroup(document.getElementById('textbox1').value)" type="button" value="Add Group" />
+    <form method="post" action="/profile">
+  <input type="test" name="field1" placeholder="Group Name">
+  <input type="test" name="field2"placeholder ="Description">
+  <input type="submit">
+</form>
+<table>
+  <tr>
+    <th scope="col">Group Name</th>
+    <th scope="col">Description</th>
+  </tr>
     {{#each groups}}
     <tr>
       <td>{{this.name}}</td>
-      <td>{{this.group_id}}<</td>>
-      <input class="btn btn-success" type="submit">
+      <td>{{this.description}}</td>
+      <td><input type="button" onclick="joinGroup({{this.group_id}})" value="Join"></td>
     </tr>
     {{/each}}
+  </table>
 </div>
